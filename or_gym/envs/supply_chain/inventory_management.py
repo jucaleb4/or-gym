@@ -4,7 +4,7 @@ Hector Perez, Christian Hubbs, Owais Sarwar
 4/14/2020
 '''
 
-import gym
+import gymnasium as gym
 import itertools
 import numpy as np
 from scipy.stats import *
@@ -214,7 +214,7 @@ class InvManagementMasterEnv(gym.Env):
         # set state
         self._update_state()
         
-        return self.state
+        return self.state, {}
 
     def _update_state(self):
         m = self.num_stages - 1
@@ -348,7 +348,9 @@ class InvManagementMasterEnv(gym.Env):
         else:
             done = False
             
-        return self.state, reward, done, {}
+        terminated = done
+        truncated = False
+        return self.state, reward, terminated, truncated {}
     
     def sample_action(self):
         '''

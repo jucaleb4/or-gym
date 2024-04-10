@@ -1,7 +1,7 @@
 import numpy as np
-import gym
-from gym import spaces, logger
-from gym.utils import seeding
+import gymnasium as gym
+from gymnasium import spaces, logger
+from gymnasium.utils import seeding
 from or_gym.utils import assign_env_config
 from copy import copy
 
@@ -94,7 +94,7 @@ class PortfolioOptEnv(gym.Env):
             self.asset_prices[:, self.step_count],
             self.holdings],
             dtype=np.float32)
-        return self.state
+        return self.state, {}
     
     def _generate_asset_prices(self):
         asset_prices = np.array([self.np_random.normal(mu, sig) for mu, sig in 
@@ -149,7 +149,9 @@ class PortfolioOptEnv(gym.Env):
             self._update_state()
             done = False
             
-        return self.state, reward, done, {}
+        terminated = done
+        truncated = False
+        return self.state, reward, terminated, truncated {}
     
     def _update_state(self):
         self.state = np.hstack([

@@ -73,7 +73,7 @@ class VMPackingEnv(gym.Env):
                 dtype=np.float32)
         }
         self.assignment = {}
-        return self.state
+        return self.state, {}
     
     def _STEP(self, action):
         done = False
@@ -99,7 +99,10 @@ class VMPackingEnv(gym.Env):
         if self.current_step >= self.step_limit:
             done = True
         self.update_state(pm_state)
-        return self.state, reward, done, {}
+
+        terminated = done
+        truncated = False
+        return self.state, reward, terminated, truncated, {}
     
     def update_state(self, pm_state):
         # Make action selection impossible if the PM would exceed capacity
