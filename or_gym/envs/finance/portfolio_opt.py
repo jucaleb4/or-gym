@@ -151,7 +151,7 @@ class PortfolioOptEnv(gym.Env):
             
         terminated = done
         truncated = False
-        return self.state, reward, terminated, truncated {}
+        return self.state, reward, terminated, truncated, {}
     
     def _update_state(self):
         self.state = np.hstack([
@@ -163,7 +163,7 @@ class PortfolioOptEnv(gym.Env):
     def step(self, action):
         return self._STEP(action)
 
-    def reset(self):
+    def reset(self, **kwargs):
         return self._RESET()
     
     def seed(self, seed=None):

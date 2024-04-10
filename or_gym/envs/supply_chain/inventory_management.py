@@ -350,7 +350,7 @@ class InvManagementMasterEnv(gym.Env):
             
         terminated = done
         truncated = False
-        return self.state, reward, terminated, truncated {}
+        return self.state, reward, terminated, truncated, {}
     
     def sample_action(self):
         '''
@@ -390,7 +390,7 @@ class InvManagementMasterEnv(gym.Env):
     def step(self, action):
         return self._STEP(action)
 
-    def reset(self):
+    def reset(self, **kwargs):
         return self._RESET()
         
 class InvManagementBacklogEnv(InvManagementMasterEnv):

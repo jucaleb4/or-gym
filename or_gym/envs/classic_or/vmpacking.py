@@ -1,7 +1,7 @@
 import numpy as np
-import gym
-from gym import spaces, logger
-from gym.utils import seeding
+import gymnasium as gym
+from gymnasium import spaces, logger
+from gymnasium.utils import seeding
 from or_gym.utils import assign_env_config
 import copy
 
@@ -43,7 +43,8 @@ class VMPackingEnv(gym.Env):
         self.mem_capacity = 1
         self.t_interval = 20
         self.tol = 1e-5
-        self.step_limit = int(60 * 24 / self.t_interval)
+        # self.step_limit = int(60 * 24 / self.t_interval)
+        self.step_limit = int(15 * 60 * 24 / self.t_interval)
         self.n_pms = 50
         self.load_idx = np.array([1, 2])
         self.seed = 0
@@ -135,7 +136,7 @@ class VMPackingEnv(gym.Env):
     def step(self, action):
         return self._STEP(action)
 
-    def reset(self):
+    def reset(self, **kwargs):
         return self._RESET()
 
 class TempVMPackingEnv(VMPackingEnv):
@@ -173,7 +174,7 @@ class TempVMPackingEnv(VMPackingEnv):
     '''
     def __init__(self, *args, **kwargs):
         super().__init__()       
-        self.state = self.reset()
+        self.state, _ = self.reset()
 
     def step(self, action):
         done = False
@@ -210,7 +211,10 @@ class TempVMPackingEnv(VMPackingEnv):
         if self.current_step >= self.step_limit:
             done = True
         self.update_state(pm_state)
-        return self.state, reward, done, {}
+
+        terminated = done
+        truncated = False
+        return self.state, reward, terminated, truncated, {}
     
     def update_state(self, pm_state):
         # Make action selection impossible if the PM would exceed capacity
@@ -230,12 +234,12 @@ class TempVMPackingEnv(VMPackingEnv):
         self.demand = self.generate_demand()
         self.durations = generate_durations(self.demand)
         self.state = (np.zeros((self.n_pms, 3)), self.demand[0])
-        return self.state
+        return self.state, {}
 
     def step(self, action):
         return self._STEP(action)
 
-    def reset(self):
+    def reset(self, **kwargs):
         return self._RESET()
 
 def generate_durations(demand):
